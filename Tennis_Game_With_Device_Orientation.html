@@ -1,0 +1,98 @@
+
+
+<html>
+<head>
+    <title>Square Moving Randomly</title>
+</head>
+<body>
+ 
+    <p id="score"></p><br>
+   <canvas id="gameCanvas" width="600" height="600"></canvas>
+   <script>
+       var canvas;
+       var canvasContext;
+       var speed = 5;
+       var ballX = document.getElementById("gameCanvas").width/2-10;
+       var ballY = 100;
+       var stepX = randomStep();
+       var stepY = randomStep();
+       var collisionCount = 0;
+       var collisionCountLeft = 0;
+       var collisionCountRight = 0;
+       var collisionCountTop = 0;
+       var collisionCountBottom = 0;
+       var w=ballX;
+       var s = 10;
+       var score = 0;
+       
+        window.onload = function() {
+            
+            // handle drawing erea and its content
+            canvas = document.getElementById("gameCanvas");
+            canvasContext = canvas.getContext('2d');
+            
+            // execute drawEverything function in a 
+            setInterval(drawEverything,speed);
+        }
+        
+        function randomStep(){
+            var items = [1,2];
+            return step = items[Math.floor(Math.random()*items.length)];
+        }
+        
+        function drawEverything() {
+            
+            if(ballX>canvas.width-10) {stepX = -randomStep(); collisionCount++; collisionCountRight++;}
+            if(ballX<10) {stepX = randomStep(); collisionCount++; collisionCountLeft++;}
+            if((ballY<=canvas.height-43)&&(ballY>=canvas.height-47)&&(ballX>=w)&&(ballX<=w+100)) {
+                stepY = -randomStep(); 
+                collisionCount++; 
+                collisionCountBottom++; 
+                score++;
+                document.getElementById("score").innerHTML ="Your Score: "+score;
+            }
+            if(ballY<10) {stepY = randomStep(); collisionCount++; collisionCountTop++;}
+            
+            ballX += stepX;
+            ballY += stepY;
+            
+            // update Context
+            canvasContext.fillStyle='black';
+            canvasContext.fillRect(0,0,canvas.width,canvas.height);
+            canvasContext.fillStyle='white';
+            /*canvasContext.fillRect(ballX,ballY,20,20);*/
+            canvasContext.beginPath();
+            canvasContext.arc(ballX, ballY, 10, 0, 2 * Math.PI);
+            canvasContext.fill();
+            
+            // paddle
+            canvasContext.fillStyle='white';
+            canvasContext.fillRect(w,canvas.height-40,100,10);
+         
+            /*document.getElementById('collisionCount').innerHTML = 
+                "    TOT:......"+collisionCount+
+                "<br>Left:....."+collisionCountLeft+
+                "<br>Right:...."+collisionCountRight+
+                "<br>Top:......"+collisionCountTop+
+                "<br>Bottom:..."+collisionCountBottom;*/
+        }
+
+    
+       
+       function processOr(event){ 
+            var gamma = Math.round(event.gamma*30);
+            w=gamma+250;
+            
+       }
+    /*window.addEventListener('keydown',doKeyDown,true);
+    window.addEventListener('keyup',initialiseS,true);
+       */
+       
+       window.addEventListener("deviceorientation",processOr, false);
+       
+       
+       
+    </script>
+</body>
+ 
+</html>
